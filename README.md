@@ -1,2 +1,2 @@
 # ProjectD
-welkom bij de Project D repository van project groep 1 
+welkom bij de Project D repository van projectgroep 1
