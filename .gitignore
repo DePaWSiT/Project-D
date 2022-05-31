@@ -4,3 +4,10 @@
 node_modules
 out
 package-lock.json
+post
+pages
+models
+layouts
+components
+utils
+public/demo
