@@ -82,3 +82,35 @@ nav.navbar {
     font-size: 1.5em;
     line-height: 150px;
 }
+
+
+/* Tensorflowjs */
+
+h1 {
+  font-style: italic;
+  color: #FF6F00;
+}
+
+
+video {
+  clear: both;
+  display: block;
+  margin: 10px;
+  background: #000000;
+  width: 640px;
+  height: 480px;
+}
+
+button {
+  padding: 10px;
+  float: left;
+  margin: 5px 3px 5px 10px;
+}
+
+.removed {
+  display: none;
+}
+
+#status {
+  font-size:150%;
+}

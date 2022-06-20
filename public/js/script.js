@@ -60,28 +60,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // AI Processing //////////////////////////////////////////////////////////////////////
-const classifier = ml5.imageClassifier('MobileNet', (err, model) => {
-    console.log('Model Loaded!');
-});
+// const classifier = ml5.imageClassifier('MobileNet', (err, model) => {
+//     console.log('Model Loaded!');
+// });
 const result = document.getElementById('result');
 const probability = document.getElementById('probability');
 
-function onImageReady() {
-    let img = document.getElementById('preview');
+async function onImageReady() {
+    let getImg = document.getElementById('preview');
+    const net = await tf.loadGraphModel('http://localhost:25565/model.json')
+    const img = tf.browser.fromPixels(getImg)
+    const resized = tf.image.resizeBilinear(img, [640,480])
+    const casted = resized.cast('int32')
+    const expanded = casted.expandDims(0)
+    const obj = await net.executeAsync(expanded)
+    const boxes = await obj[4].array()
+    const classes = await obj[5].array()
+    const scores = await obj[6].array()
+    
+    console.log(boxes);
+    console.log(classes);
+    console.log(scores);
 
-    classifier.predict(img, function(err, results) {
-        if(results) {
-            result.innerText = results[0].label;
-            probability.innerText = results[0].confidence.toFixed(4);
+
+        
+    // classifier.predict(img, function(err, results) {
+    //     if(results) {
+    //         result.innerText = results[0].label;
+    //         probability.innerText = results[0].confidence.toFixed(4);
             
-            // Tijdelijke fix // 
-            // functie moet wachten totdat er een nieuw resultaat komt, 
-            // dit zorgt ervoor dat dit progrmma niet bij het laden, de bol.com pagina opent
-            if(result.innerText != "window screen"){
-                window.open("https://www.bol.com/nl/nl/s/?searchtext=" + results[0].label);
-            }
-        }
-    });
+    //         // Tijdelijke fix // 
+    //         // functie moet wachten totdat er een nieuw resultaat komt, 
+    //         // dit zorgt ervoor dat dit progrmma niet bij het laden, de bol.com pagina opent
+    //         if(result.innerText != "window screen"){
+    //             window.open("https://www.bol.com/nl/nl/s/?searchtext=" + results[0].label);
+    //         }
+    //     }
+    // });
 }
 
 function loadNewImage() {
