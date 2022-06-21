@@ -68,12 +68,16 @@ const probability = document.getElementById('probability');
 
 async function onImageReady() {
     let getImg = document.getElementById('preview');
-    const net = await tf.loadGraphModel('http://localhost:25565/model.json')
+    //const net = await tf.loadGraphModel('http://localhost:25565/model.json')
+    // Keras Model
+    //const net = await tf.loadLayersModel('localstorage://assets/models/model.json');
+    const model = await tf.loadGraphModel('assets/models/model.json');
+
     const img = tf.browser.fromPixels(getImg)
     const resized = tf.image.resizeBilinear(img, [640,480])
     const casted = resized.cast('int32')
     const expanded = casted.expandDims(0)
-    const obj = await net.executeAsync(expanded)
+    const obj = await model.executeAsync(expanded)
     const boxes = await obj[4].array()
     const classes = await obj[5].array()
     const scores = await obj[6].array()
@@ -82,8 +86,22 @@ async function onImageReady() {
     console.log(classes);
     console.log(scores);
 
-
+    let tensor = tf.browser.fromPixels(img, 3)
+        .resizeNearestNeighbor([244, 244])
+        .toFloat()
+        .reverse(-1);
         
+    let predictions = await model.predict(tensor).data();
+    let top5 = Array.from(predictions)
+        .map(function(p, i) {
+            return {
+                probability: p,
+                className: TARGET_CLASSES[i]
+            };
+        }).sort(function(a,b) {
+            return b.probability - a.probability;
+        }).slice(0,2);
+
     // classifier.predict(img, function(err, results) {
     //     if(results) {
     //         result.innerText = results[0].label;
@@ -99,6 +117,16 @@ async function onImageReady() {
     // });
 }
 
+let model;
+let modelLoaded = false;
+$(document).ready(async function () {
+        console.log("Model is loading...")
+        model = await tf.loadGraphModel('assets/models/model.json')
+        console.log("Model loaded!")
+    });
+
+
+
 function loadNewImage() {
     let img = document.getElementById('preview');
     //andomNum = getRandomInt(6);                
@@ -106,5 +134,6 @@ function loadNewImage() {
     
     snap.addEventListener('click', () => loadNewImage());
 }
+
 
 loadNewImage();
