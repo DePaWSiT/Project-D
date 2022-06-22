@@ -49,10 +49,23 @@ function sleep(ms) {
 }
 
 snap.addEventListener('click', () => {
+    //RemoveResults();
     context.drawImage(video, 0, 0, 640, 480);
+    RemoveResults();
 });
 
 startWebCam();
+
+
+function RemoveResults() {
+    // Remove previous result if they're here
+    const oldResults = document.querySelectorAll('.result');
+
+    oldResults.forEach(oldResult => {
+        sleep(1000)
+        oldResult.remove();
+    });
+}
 
 // Upload //////////////////////////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function () {
@@ -69,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const item = items[0];
         const blob = item.getAsFile();
 
+        
         const imageEle = document.getElementById('preview');
         imageEle.src = URL.createObjectURL(blob);
     });
@@ -87,6 +101,7 @@ function onImageReady() {
 
     classifier.predict(img, function(err, results) {
         if(results) {
+            RemoveResults();
             result.innerText = results[0].label;
             probability.innerText = results[0].confidence.toFixed(4);
             
@@ -97,8 +112,9 @@ function onImageReady() {
                 // Create an array with the results
                 const resultArr = result.innerText.split(', ');
                 //window.open("https://www.bol.com/nl/nl/s/?searchtext=" +  result.innerText);
+                var limit = 3
                 resultArr.forEach(res => {
-                    console.log(res);
+                    // Create links for all results
                     var a = document.createElement('a');
                     var linkText = document.createTextNode(res);
                     a.appendChild(linkText);
@@ -117,11 +133,11 @@ function loadNewImage() {
     let img = document.getElementById('preview');
     //andomNum = getRandomInt(6);                
     img.src = canvas.toDataURL('image/jpeg');
-    
+
     snap.addEventListener('click', () => loadNewImage());
 }
 
-// loadNewImage();
+loadNewImage();
 
 // // Script.JS
 // console.log("Script JS Loaded");
