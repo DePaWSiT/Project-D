@@ -114,3 +114,7 @@ button {
 #status {
   font-size:150%;
 }
+
+.result {
+  display: block;
+}

@@ -1,12 +1,12 @@
 // Script.JS
 console.log("Script JS Loaded");
-
+ 
 // Camera //////////////////////////////////////////////////////////////////////////////
-
+ 
 const video     = document.getElementById('video');
 const canvas    = document.getElementById('canvas');
 const snap      = document.getElementById('snap');
-
+ 
 const constraints = {
     audio: false,
     video: {
@@ -14,7 +14,7 @@ const constraints = {
         height: { min: 576, ideal: 720, max: 1080 }
     }
 }
-
+ 
 // Start webcam function
 async function startWebCam() {
     try {
@@ -96,7 +96,7 @@ async function onImageReady() {
         .map(function(p, i) {
             return {
                 probability: p,
-                className: TARGET_CLASSES[i]
+                className: classes[i]
             };
         }).sort(function(a,b) {
             return b.probability - a.probability;
@@ -120,20 +120,18 @@ async function onImageReady() {
 let model;
 let modelLoaded = false;
 $(document).ready(async function () {
-        console.log("Model is loading...")
-        model = await tf.loadGraphModel('assets/models/model.json')
-        console.log("Model loaded!")
-    });
+    console.log("Model is loading...")
+    model = await tf.loadGraphModel('../assets/models/model.json')
+    console.log("Model loaded!")
+});
 
 
 
 function loadNewImage() {
     let img = document.getElementById('preview');
     //andomNum = getRandomInt(6);                
-    img.src = canvas.toDataURL('image/jpeg');
-    
+    img.src = canvas.toDataURL('image/jpeg');    
     snap.addEventListener('click', () => loadNewImage());
 }
-
 
 loadNewImage();
