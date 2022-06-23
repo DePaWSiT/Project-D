@@ -68,10 +68,9 @@ const probability = document.getElementById('probability');
 
 async function onImageReady() {
     let getImg = document.getElementById('preview');
-    //const net = await tf.loadGraphModel('http://localhost:25565/model.json')
-    // Keras Model
-    //const net = await tf.loadLayersModel('localstorage://assets/models/model.json');
-    const model = await tf.loadGraphModel('assets/models/model.json');
+    const URL = 'http://localhost:25565/model.json'
+    const model = await tf.loadGraphModel(URL);
+    console.log(model);
 
     const img = tf.browser.fromPixels(getImg)
     const resized = tf.image.resizeBilinear(img, [640,480])
@@ -86,21 +85,6 @@ async function onImageReady() {
     console.log(classes);
     console.log(scores);
 
-    let tensor = tf.browser.fromPixels(img, 3)
-        .resizeNearestNeighbor([244, 244])
-        .toFloat()
-        .reverse(-1);
-        
-    let predictions = await model.predict(tensor).data();
-    let top5 = Array.from(predictions)
-        .map(function(p, i) {
-            return {
-                probability: p,
-                className: classes[i]
-            };
-        }).sort(function(a,b) {
-            return b.probability - a.probability;
-        }).slice(0,2);
 
     // classifier.predict(img, function(err, results) {
     //     if(results) {
@@ -116,14 +100,6 @@ async function onImageReady() {
     //     }
     // });
 }
-
-let model;
-let modelLoaded = false;
-$(document).ready(async function () {
-    console.log("Model is loading...")
-    model = await tf.loadGraphModel('../assets/models/model.json')
-    console.log("Model loaded!")
-});
 
 
 
