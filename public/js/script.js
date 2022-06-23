@@ -2,6 +2,7 @@
 console.log("Script JS Loaded");
 
 testMode = false
+performanceTest = false //is to ensure the test is only run once on startup
 console.log(`Testing mode: ${testMode}`)
 // Camera //////////////////////////////////////////////////////////////////////////////
  
@@ -20,6 +21,11 @@ const constraints = {
 // Start webcam function
 async function startWebCam() {
     try {
+        if(testMode)
+        {
+            console.log(`Audio Permissions: ${constraints['audio']}`)
+            console.log(`Camera permissions (Ideal): ${constraints['video']['width']['ideal']} X ${constraints['video']['height']['ideal']}`);
+        }
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
         window.stream = stream;
@@ -74,8 +80,9 @@ async function onImageReady() {
     console.log(model);
 
     let getImg = document.getElementById('preview');
-    if(testMode)
+    if(testMode && performanceTest)
     {
+        performanceTest = false;
         var startTime = performance.now();
         console.log(`Time start at: ${performance.now()}`)
         for(let i = 0; i<100; i++)
