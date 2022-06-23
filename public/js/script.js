@@ -1,6 +1,9 @@
 // Script.JS
 console.log("Script JS Loaded");
- 
+
+testMode = false
+performanceTest = false //is to ensure the test is only run once on startup
+console.log(`Testing mode: ${testMode}`)
 // Camera //////////////////////////////////////////////////////////////////////////////
  
 const video     = document.getElementById('video');
@@ -18,6 +21,11 @@ const constraints = {
 // Start webcam function
 async function startWebCam() {
     try {
+        if(testMode)
+        {
+            console.log(`Audio Permissions: ${constraints['audio']}`)
+            console.log(`Camera permissions (Ideal): ${constraints['video']['width']['ideal']} X ${constraints['video']['height']['ideal']}`);
+        }
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = stream;
         window.stream = stream;
@@ -67,40 +75,44 @@ const result = document.getElementById('result');
 const probability = document.getElementById('probability');
 
 async function onImageReady() {
+    const URL = 'http://localhost:25565/model.json'
+    const model = await tf.loadGraphModel(URL);
+    console.log(model);
+
     let getImg = document.getElementById('preview');
-    //const net = await tf.loadGraphModel('http://localhost:25565/model.json')
-    // Keras Model
-    //const net = await tf.loadLayersModel('localstorage://assets/models/model.json');
-    const model = await tf.loadGraphModel('assets/models/model.json');
-
-    const img = tf.browser.fromPixels(getImg)
-    const resized = tf.image.resizeBilinear(img, [640,480])
-    const casted = resized.cast('int32')
-    const expanded = casted.expandDims(0)
-    const obj = await model.executeAsync(expanded)
-    const boxes = await obj[4].array()
-    const classes = await obj[5].array()
-    const scores = await obj[6].array()
+    if(testMode && performanceTest)
+    {
+        performanceTest = false;
+        var startTime = performance.now();
+        console.log(`Time start at: ${performance.now()}`)
+        for(let i = 0; i<100; i++)
+        {
+            const img = tf.browser.fromPixels(getImg)
+            const resized = tf.image.resizeBilinear(img, [640,480])
+            const casted = resized.cast('int32')
+            const expanded = casted.expandDims(0)
+            const obj = await model.executeAsync(expanded)
+            const boxes = await obj[4].array()
+            const classes = await obj[5].array()
+            const scores = await obj[6].array()
+        }
+        var endTime = performance.now()
+        console.log(`Running inference 100 times took an estimate of: ${endTime-startTime} Miliseconds.\nOr ${(endTime - startTime) / 1000} Seconds`)
     
-    console.log(boxes);
-    console.log(classes);
-    console.log(scores);
+    }
+    else
+    {
+        const img = tf.browser.fromPixels(getImg)
+        const resized = tf.image.resizeBilinear(img, [640,480])
+        const casted = resized.cast('int32')
+        const expanded = casted.expandDims(0)
+        const obj = await model.executeAsync(expanded)
+        const boxes = await obj[4].array()
+        const classes = await obj[5].array()
+        const scores = await obj[6].array()
+    }
+    
 
-    let tensor = tf.browser.fromPixels(img, 3)
-        .resizeNearestNeighbor([244, 244])
-        .toFloat()
-        .reverse(-1);
-        
-    let predictions = await model.predict(tensor).data();
-    let top5 = Array.from(predictions)
-        .map(function(p, i) {
-            return {
-                probability: p,
-                className: classes[i]
-            };
-        }).sort(function(a,b) {
-            return b.probability - a.probability;
-        }).slice(0,2);
 
     // classifier.predict(img, function(err, results) {
     //     if(results) {
@@ -116,14 +128,6 @@ async function onImageReady() {
     //     }
     // });
 }
-
-let model;
-let modelLoaded = false;
-$(document).ready(async function () {
-    console.log("Model is loading...")
-    model = await tf.loadGraphModel('../assets/models/model.json')
-    console.log("Model loaded!")
-});
 
 
 
