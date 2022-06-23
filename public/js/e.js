@@ -62,7 +62,7 @@ function RemoveResults() {
     const oldResults = document.querySelectorAll('.result');
 
     oldResults.forEach(oldResult => {
-        sleep(1000)
+        sleep(10)
         oldResult.remove();
     });
 }
