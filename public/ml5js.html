@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Home</title>
+    <title>Visual Search Ml5js</title>
     <meta name="description" content="A simple HTML5 Template for new projects.">
     <meta name="author" content="SitePoint">
 
@@ -76,7 +76,7 @@
               <div class="tab-pane fade show active" id="upload" role="tabpanel" aria-labelledby="upload-tab">
                 <div class="preview-container mt-3">
                   <div>
-                      <div><kbd class="key">Ctrl</kbd> + <kbd class="key">V</kbd> in this window.</div>
+                      <div>Gebruik <kbd class="key">Ctrl</kbd> + <kbd class="key">V</kbd> om een afbeelding in het vak te plakken.</div>
                       <img onload="onImageReady()"  class="preview" id="preview" />
                   </div>
                 </div>
@@ -88,18 +88,17 @@
             </div>
             <div class="col-12">
                 <canvas class="d-none" id="canvas" width="640px" height="480px"></canvas>
-                <!--
-                <h1>Simple Image Classification Example</h1>
-              
-                <img onload="onImageReady()" id="image" src="images/493.jpg"/>
-                -->  
                 <div id="results">
 
                 </div>
                 <p class="inference_result d-none">
-                    I guess this is a <span id="result">...</span>.
-                    My confidence is <span id="probability">...</span>
+                    <span id="result">...</span>.
+                    <span id="probability">...</span>
                 </p>     
+            </div>
+            <div class="col-12 mt-3">
+              <hr>
+              <p><a href="index.html">Terug naar home</a></p>
             </div>
         </div>
       </div>

@@ -86,12 +86,6 @@ nav.navbar {
 
 /* Tensorflowjs */
 
-h1 {
-  font-style: italic;
-  color: #FF6F00;
-}
-
-
 video {
   clear: both;
   display: block;

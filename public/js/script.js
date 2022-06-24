@@ -67,16 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// AI Processing //////////////////////////////////////////////////////////////////////
-// const classifier = ml5.imageClassifier('MobileNet', (err, model) => {
-//     console.log('Model Loaded!');
-// });
+// AI Processing ///////////////////////////////////////////////////////////////////////
+
 const result = document.getElementById('result');
 const probability = document.getElementById('probability');
 
 async function onImageReady() {
-    const URL = 'http://localhost:25565/model.json'
-    const model = await tf.loadGraphModel(URL);
+    //const URL = 'http://localhost:25565/model.json'
+    console.log("Model loading...");
+    const model = await tf.loadGraphModel('../assets/models/model.json');
+    console.log("Model loaded!");
     console.log(model);
 
     let getImg = document.getElementById('preview');
@@ -111,22 +111,6 @@ async function onImageReady() {
         const classes = await obj[5].array()
         const scores = await obj[6].array()
     }
-    
-
-
-    // classifier.predict(img, function(err, results) {
-    //     if(results) {
-    //         result.innerText = results[0].label;
-    //         probability.innerText = results[0].confidence.toFixed(4);
-            
-    //         // Tijdelijke fix // 
-    //         // functie moet wachten totdat er een nieuw resultaat komt, 
-    //         // dit zorgt ervoor dat dit progrmma niet bij het laden, de bol.com pagina opent
-    //         if(result.innerText != "window screen"){
-    //             window.open("https://www.bol.com/nl/nl/s/?searchtext=" + results[0].label);
-    //         }
-    //     }
-    // });
 }
 
 
