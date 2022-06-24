@@ -1,0 +1,12 @@
+.DS_Store
+.netlify
+.next
+node_modules
+out
+post
+pages
+models
+layouts
+components
+utils
+public/demo
